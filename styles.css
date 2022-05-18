@@ -1,8 +1,39 @@
-body{
-  background: #eeedec;
-  letter-spacing: 0.2em;
-  font-size: 0.8em;
+body {
+    background: #eeedec;
+    letter-spacing: 0.2em;
+    font-size: 0.8em;
 }
-.container{
-  max-width: 400px;
+
+.container {
+    max-width: 400px;
+}
+
+.btn:hover{
+    color: black ;
+
+}
+
+.icon {
+    position: relative;
+    top: -50px;
+    border-radius: 50%;
+    width: 100px;
+    margin-bottom: -50px;
+}
+
+.animation.active {
+    animation-duration: 1s;
+    animation-name: fade-in-up;
+    animation-delay: 1s;
+}
+
+@keyframes fade-in-up {
+    from {
+        margin: 100px 0 0;
+        opacity: 0;
+    }
+    to {
+        margin: unset;
+        opacity: 1;
+    }
 }
