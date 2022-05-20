@@ -19,8 +19,11 @@ const updateUI = (cityObj) => {
 
     if (card.classList.contains("d-none")) {
         card.classList.remove("d-none");
-        card.classList.toggle('active');
     }
+    if(card.classList.contains("active")){
+        card.classList.remove("active");
+    }
+    card.classList.toggle('active');
 
     //update icon
     let weatherIcon = `https://raw.githubusercontent.com/iamshaunjp/modern-javascript/4fa8460583b40f180fbb42126cb2c35c628dc629/weather_app/img/icons/${weather.WeatherIcon}.svg`;
@@ -58,6 +61,7 @@ const updateCity = async (city) => {
 }
 
 cityForm.city.addEventListener("input", e => {
+    // e.preventDefault();
 
     let city = cityForm.city.value.trim();
 
@@ -77,12 +81,14 @@ function runThrottling(city) {
     }
 }
 
-const suggestCity = async (city) => {
+const suggestCity = (city) => {
 
-    const listCity = await getCity(city).then((listCity) =>
-        addDropDown(listCity)
-    );
+    getCity(city)
+        .then((listCity) => {
 
+            addDropDown(listCity)
+
+        });
 }
 
 function removeAutofill() {
@@ -101,7 +107,7 @@ const addDropDown = async (list) => {
 
     removeAutofill();
 
-    if (list.length !== undefined) {
+    if (list !== undefined) {
         let ulist = document.createElement('ul');
         ulist.id = 'autofill';
         ulist.style.position = 'absolute';
@@ -115,27 +121,31 @@ const addDropDown = async (list) => {
             let listItem = document.createElement('li');
             listItem.id = i;
             listItem.className = "list-group-item btn d-flex justify-content-between align-items-center";
-            listItem.innerHTML = `<span>${list[i].AdministrativeArea.LocalizedName}</span>`;
+            listItem.textContent = `${list[i].AdministrativeArea.LocalizedName}`;
             ulist.appendChild(listItem);
         }
 
         cityForm.appendChild(ulist);
 
         ulist.addEventListener("click", (e) => {
-            console.log("addEventListener")
-
-            cityForm.city.text = list[e.target.id];
-            finalSearch(list[e.target.id])
+            e.preventDefault();
+            cityForm.city.value = list[e.target.id].AdministrativeArea.EnglishName;
             removeAutofill();
+
+            getCity(cityForm.city.value)
+                .then((listCity) => {
+
+                    finalSearch(listCity[0]);
+
+                });
         });
     }
-
 }
 
 const finalSearch = (city) => {
     console.log("finalSearch")
     console.log(city)
-    let isError = false;
+
     updateCity(city)
         .then(data => updateUI(data))
         .catch(
@@ -143,7 +153,6 @@ const finalSearch = (city) => {
                 isError = true
             }
         );
-    return isError;
 }
 
 const dropDownsSelection = async (ulist) => {
@@ -189,9 +198,12 @@ const readCity = () => {
             .then(data => updateUI(data));
 
         if (card.classList.contains("d-none")) {
-            card.classList.remove("d-none")
-            card.classList.toggle('active');
+            card.classList.remove("d-none");
         }
+        if(card.classList.contains("active")){
+            card.classList.remove("active");
+        }
+        card.classList.toggle('active');
     }
 };
 
